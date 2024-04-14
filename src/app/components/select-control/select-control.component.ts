@@ -21,6 +21,7 @@ export class SelectControlComponent implements OnInit, AfterViewInit, OnDestroy 
   @Input() placeholder: any[] = [];
   @Input() displayName: any = '';
   @Input() id: any = '';
+
   public optionctrl: FormControl<any> = new FormControl<any>(null);
   public optionFilterCtrl: FormControl<any> = new FormControl<any>('');
 
@@ -93,4 +94,9 @@ export class SelectControlComponent implements OnInit, AfterViewInit, OnDestroy 
   addNew(){
 
   }
+
+  handleEvent(eventData: any) {
+    console.log(eventData); // Output: Hello from child component!
+  }
+  
 }
