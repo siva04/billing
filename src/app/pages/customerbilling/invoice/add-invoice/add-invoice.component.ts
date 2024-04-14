@@ -12,6 +12,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { SelectControlComponent } from '../../../../components/select-control/select-control.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { BillPreviewComponent } from '../bill-preview/bill-preview.component';
 
 
 export interface IbillingItems  {
@@ -42,7 +43,9 @@ export class AddInvoiceComponent {
     {name: 'Company No.1', id: 'A', email: 'a@gmail.com', phone: '0987654321', GSTno: '1234', adress: 'no.12, ambattur'},
   ];
 
-  constructor(public dialoge: MatDialogRef<AddInvoiceComponent>){}
+  constructor(public dialoge: MatDialogRef<AddInvoiceComponent>,
+    public dialog: MatDialog
+  ){}
 
   form:any = FormGroup;
   file:any='';
@@ -87,5 +90,21 @@ export class AddInvoiceComponent {
   }
   addBillItem(){
     this.billItems.push({desc: '', fromDate: '', endDate: '', amt: ''})
+  }
+  billPreview(){
+    let dialogRef = this.dialog.open(BillPreviewComponent, {
+      height: '100svh',
+      minWidth: '100%',
+      maxWidth: '100%',
+      width: '100%',
+      // position:{
+      //   top: 0,
+      //   left:0
+      // }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }
