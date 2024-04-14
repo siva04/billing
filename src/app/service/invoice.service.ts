@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { Observable } from 'rxjs';
 
 
 
@@ -30,6 +31,10 @@ export class InvoiceService {
 
   deleteInvoice(id:String){
     return this.http.delete<any>(`${environment.apiUrl}/invoice/${id}`);
+  }
+
+  getPdfBlob(id:String): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/generateInvoice/${id}`, { responseType: 'blob' });
   }
 
 }

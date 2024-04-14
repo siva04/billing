@@ -10,6 +10,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { AddInvoiceComponent } from './add-invoice/add-invoice.component';
 import { InvoiceService } from '../../../service/invoice.service';
 import { environment } from '../../../../environments/environment.development';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { PdftemplateComponent } from './pdftemplate/pdftemplate.component';
+import { log } from 'console';
+
 
 @Component({
   selector: 'app-invoice',
@@ -29,10 +33,11 @@ export class InvoiceComponent implements OnInit {
     size : 0
   };
   public env = environment.apiUrl;
+  blobUrl: SafeResourceUrl;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(public dialog: MatDialog,public invoiceservice : InvoiceService) {
+  constructor(public dialog: MatDialog,public invoiceservice : InvoiceService,private sanitizer: DomSanitizer) {
  
 
 
@@ -112,6 +117,31 @@ export class InvoiceComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+  }
+
+  onPreview(id:String){
+    this.invoiceservice.getPdfBlob(id).subscribe(blob => {
+      this.blobUrl = this.createBlobUrl(blob);
+
+      let dialogRef = this.dialog.open(PdftemplateComponent, {
+        height: '100svh',
+        width: '50%',
+        data : this.blobUrl
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+        this.fetchData(this.paginat.page,this.paginat.size);
+      });
+
+    });
+
+  }
+
+  createBlobUrl(blob: Blob): SafeResourceUrl {
+    console.log(blob)
+    const objectUrl = URL.createObjectURL(blob);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
   }
 
   applyFilter(event: Event) {
