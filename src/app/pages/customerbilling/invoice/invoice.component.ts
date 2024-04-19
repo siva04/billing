@@ -13,12 +13,14 @@ import { environment } from '../../../../environments/environment.development';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PdftemplateComponent } from './pdftemplate/pdftemplate.component';
 import { log } from 'console';
+import { BillPreviewComponent } from './bill-preview/bill-preview.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
   selector: 'app-invoice',
   standalone: true,
-  imports: [MatButtonModule,MatDialogModule, MatPaginator, MatPaginatorModule, MatSort, MatSortModule, MatTableModule, MatInputModule, MatFormFieldModule],
+  imports: [MatButtonModule,  MatIconModule, MatDialogModule, MatPaginator, MatPaginatorModule, MatSort, MatSortModule, MatTableModule, MatInputModule, MatFormFieldModule],
   templateUrl: './invoice.component.html',
   styleUrl: './invoice.component.scss',
   providers : [InvoiceService]
@@ -120,17 +122,16 @@ export class InvoiceComponent implements OnInit {
   }
 
   onPreview(id:String){
-    this.invoiceservice.getPdfBlob(id).subscribe(blob => {
-      this.blobUrl = this.createBlobUrl(blob);
-
-      let dialogRef = this.dialog.open(PdftemplateComponent, {
-        height: '100svh',
-        width: '50%',
-        data : this.blobUrl
+    this.invoiceservice.getInvoiceById(id).subscribe(res => {
+      let dialogRef = this.dialog.open(BillPreviewComponent, {
+        height: '100%',
+        width: '100%',
+        maxHeight : '100%',
+        maxWidth : '100%',
+        data : res.data
       });
-  
       dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
+       
         this.fetchData(this.paginat.page,this.paginat.size);
       });
 
@@ -138,11 +139,6 @@ export class InvoiceComponent implements OnInit {
 
   }
 
-  createBlobUrl(blob: Blob): SafeResourceUrl {
-    console.log(blob)
-    const objectUrl = URL.createObjectURL(blob);
-    return this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
-  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

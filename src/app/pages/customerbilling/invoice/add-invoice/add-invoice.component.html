@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-12">
               @defer (on timer(100ms)) {
-                <mat-form-field>
+                <mat-form-field class="w-100">
                   <mat-label>Select Customer</mat-label>
                   <mat-select formControlName="customer">
                     <mat-option *ngFor="let option of customers" [value]="option._id">
@@ -97,7 +97,6 @@
         
       </form>
 </mat-dialog-content>
-
 
 
 
